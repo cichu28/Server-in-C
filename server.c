@@ -8,14 +8,17 @@
 
 int main(){
 	int welcomeSocket, newSocket;
+//int serverSocket;
 	char buffer[1024];
+//char buffer_server[1024];
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
 	socklen_t addr_size;
-	//int counter = 1;
+	int counter = 0;
 	//char counter_char;
-	char message[30] = "Hello!\n";
-	
+	char message[30] = "From Server!!\n";
+	int i=0;
+	signed char PWM_value = 100;
 	init();
 	
 	/*---- Create the socket. The three arguments are: ----*/
@@ -37,24 +40,25 @@ int main(){
 
 	while(1)
 	{
-		//counter++;
+		counter++;
 		/*---- Listen on the socket, with 5 max connection requests queued ----*/
-		if(listen(welcomeSocket,5)==0)
-		printf("Listening\n");
-		else
-		printf("Error\n");
+		if(listen(welcomeSocket,5)==0)		printf("Listening.........\n");
+		else								printf("Error\n");
 
 		/*---- Accept call creates a new socket for the incoming connection ----*/
 		addr_size = sizeof serverStorage;
 		newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
 
+	//recv(serverSocket, buffer, 1024, 0);
+	//printf("Recived: %s",buffer); 
 		/*---- Send message to the socket of the incoming connection ----*/
 		//message = "Hello from Raspberry!";
 		//counter_char = (char)counter;
 		strcpy(buffer,message);
 		//strcpy(buffer, counter_char);
-		send(newSocket,buffer,13,0);
-		Led();
+		printf("Message %i to send: %s\n\n", counter, buffer);
+		send(newSocket,buffer,11,0);
+		Led(PWM_value);
 	}
 
 	return 0;

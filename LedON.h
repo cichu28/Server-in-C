@@ -2,6 +2,6 @@
 #define LedON_h
 
 void init();
-void Led();
+void Led(signed char);
 
 #endif
