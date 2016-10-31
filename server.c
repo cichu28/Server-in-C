@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
+#include "LedON.h"
 
 int main(){
 	int welcomeSocket, newSocket;
@@ -14,6 +15,8 @@ int main(){
 	//int counter = 1;
 	//char counter_char;
 	char message[30] = "Hello!\n";
+	
+	init();
 	
 	/*---- Create the socket. The three arguments are: ----*/
 	/* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
@@ -51,6 +54,7 @@ int main(){
 		strcpy(buffer,message);
 		//strcpy(buffer, counter_char);
 		send(newSocket,buffer,13,0);
+		Led();
 	}
 
 	return 0;
