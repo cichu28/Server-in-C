@@ -8,9 +8,9 @@
 
 int main(){
 	int welcomeSocket, newSocket;
-//int serverSocket;
+int clientSocket;
 	char buffer[1024];
-//char buffer_server[1024];
+char buffer_client[1024];
 	struct sockaddr_in serverAddr;
 	struct sockaddr_storage serverStorage;
 	socklen_t addr_size;
@@ -49,14 +49,16 @@ int main(){
 		addr_size = sizeof serverStorage;
 		newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
 
-	//recv(serverSocket, buffer, 1024, 0);
-	//printf("Recived: %s",buffer); 
+
+// *** ODBIERANIE
+recv(clientSocket, buffer_client, 1024, 0);
+printf("Data: %s\n",buffer_client);   
 		/*---- Send message to the socket of the incoming connection ----*/
-		//message = "Hello from Raspberry!";
-		//counter_char = (char)counter;
+
+		// *** WYSYLANIE
 		strcpy(buffer,message);
 		//strcpy(buffer, counter_char);
-		printf("Message %i to send: %s\n\n", counter, buffer);
+		printf("Message %i to send: %s\n", counter, buffer);
 		send(newSocket,buffer,11,0);
 		Led(PWM_value);
 	}

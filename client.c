@@ -8,9 +8,9 @@
 int main()
 {
   int clientSocket;
-//int newSocket;
+int newSocket;
   char buffer[1024];
-//char buffer_client[1024];
+
   struct sockaddr_in serverAddr;
   socklen_t addr_size;
 	signed char PWM_value = 0;
@@ -37,11 +37,18 @@ int main()
   /*---- Connect the socket to the server using the address struct ----*/
   addr_size = sizeof serverAddr;
   connect(clientSocket, (struct sockaddr *) &serverAddr, addr_size);
-	
-//strcpy(buffer_client,message);
-//send(newSocket,buffer_client,13,0);
 
 
+
+
+// *** WYSYLANIE
+char buffer_client[1024];
+strcpy(buffer_client,message);
+printf("Message to send: %s\n\n", buffer_client);
+send(newSocket,buffer,11,0);
+
+
+	// *** ODBIERANIE
   /*---- Read the message from the server into the buffer ----*/
   recv(clientSocket, buffer, 1024, 0);
 
