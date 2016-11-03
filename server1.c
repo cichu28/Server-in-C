@@ -1,57 +1,61 @@
-/****************** SERVER CODE ****************/
+/******************* SERVER CODE *****************/
 
 #include <stdio.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <string.h>
+#include <stdlib.h>
 
 int main(){
-	int welcomeSocket, newSocket;
-	char buffer[1024];
-	struct sockaddr_in serverAddr;
-	struct sockaddr_storage serverStorage;
-	socklen_t addr_size;
-	//int counter = 1;
-	//char counter_char;
-	char message[30] = "Hello!\n";
-	
-	/*---- Create the socket. The three arguments are: ----*/
-	/* 1) Internet domain 2) Stream socket 3) Default protocol (TCP in this case) */
-	welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
-	 
-	/*---- Configure settings of the server address struct ----*/
-	/* Address family = Internet */
-	serverAddr.sin_family = AF_INET;
-	/* Set port number, using htons function to use proper byte order */
-	serverAddr.sin_port = htons(8080);
-	/* Set IP address to localhost */
-	serverAddr.sin_addr.s_addr = inet_addr("172.24.1.1");
-	/* Set all bits of the padding field to 0 */
-	memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
+  int welcomeSocket, newSocket, portNum, clientLen, nBytes;
+  char buffer[1024];
+  struct sockaddr_in serverAddr;
+  struct sockaddr_storage serverStorage;
+  socklen_t addr_size;
+  int i;
 
-	/*---- Bind the address struct to the socket ----*/
-	bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+  welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 
-	while(1)
-	{
-		//counter++;
-		/*---- Listen on the socket, with 5 max connection requests queued ----*/
-		if(listen(welcomeSocket,5)==0)
-		printf("Listening\n");
-		else
-		printf("Error\n");
+  portNum = 7891;
+  
+  serverAddr.sin_family = AF_INET;
+  serverAddr.sin_port = htons(portNum);
+  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
-		/*---- Accept call creates a new socket for the incoming connection ----*/
-		addr_size = sizeof serverStorage;
-		newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
+  bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 
-		/*---- Send message to the socket of the incoming connection ----*/
-		//message = "Hello from Raspberry!";
-		//counter_char = (char)counter;
-		strcpy(buffer,message);
-		//strcpy(buffer, counter_char);
-		send(newSocket,buffer,13,0);
-	}
+  if(listen(welcomeSocket,5)==0)
+    printf("Listening\n");
+  else
+    printf("Error\n");
 
-	return 0;
+  addr_size = sizeof serverStorage;
+
+  /*loop to keep accepting new connections*/
+  while(1){
+    newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
+    /*fork a child process to handle the new connection*/
+    if(!fork()){
+      nBytes = 1;
+      /*loop while connection is live*/
+      while(nBytes!=0){
+        nBytes = recv(newSocket,buffer,1024,0);
+  
+        for (i=0;i<nBytes-1;i++){
+          buffer[i] = toupper(buffer[i]);
+        }
+
+        send(newSocket,buffer,nBytes,0);
+      }
+      close(newSocket);
+      exit(0);
+    }
+    /*if parent, close the socket and go back to listening new requests*/
+    else{
+      close(newSocket);
+    }
+  }
+
+  return 0;
 }
