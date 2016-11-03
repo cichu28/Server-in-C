@@ -7,12 +7,17 @@
 #include <stdlib.h>
 
 int main(){
+  init();
+  Led(100);
+  
   int welcomeSocket, newSocket, portNum, clientLen, nBytes;
-  char buffer[1024];
+  unsigned char buffer[1024];
+  //int buffer[1024];
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
   int i;
+  int PWM_value;
 
   welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
 
@@ -23,7 +28,7 @@ int main(){
   serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
 
-  bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
+bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
 
   if(listen(welcomeSocket,5)==0)
     printf("Listening\n");
@@ -36,23 +41,32 @@ int main(){
   while(1){
     newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
     /*fork a child process to handle the new connection*/
-    if(!fork()){
+    if(!fork())
+    {
       nBytes = 1;
       /*loop while connection is live*/
       while(nBytes!=0){
         nBytes = recv(newSocket,buffer,1024,0);
   
-        for (i=0;i<nBytes-1;i++){
+        for (i=0;i<nBytes-1;i++)
+        {
+			PWM_value = buffer[i];
+			PWM_value -= 48;
+			printf("%i\n\n", PWM_value);
+			//printf("%i\n\n", buffer[i]);
           buffer[i] = toupper(buffer[i]);
         }
 
         send(newSocket,buffer,nBytes,0);
       }
       close(newSocket);
+
       exit(0);
     }
+    
     /*if parent, close the socket and go back to listening new requests*/
-    else{
+    else
+    {
       close(newSocket);
     }
   }
