@@ -8,7 +8,7 @@
 
 int main(){
   init();
-  Led(100);
+  Led(8);
   
   int welcomeSocket, newSocket, portNum, clientLen, nBytes;
   unsigned char buffer[1024];
@@ -41,21 +41,24 @@ bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
   while(1){
     newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
     /*fork a child process to handle the new connection*/
+    
     if(!fork())
     {
+      
       nBytes = 1;
       /*loop while connection is live*/
       while(nBytes!=0){
         nBytes = recv(newSocket,buffer,1024,0);
 
-	  PWM_value = buffer[0];
+	  PWM_value = (int)buffer[0];
 	  PWM_value -= 48;
 	  printf("PWM: %i\n\n", PWM_value);
+	  
 
         send(newSocket,buffer,nBytes,0);
       }
       close(newSocket);
-
+Led(10);
       exit(0);
     }
     
