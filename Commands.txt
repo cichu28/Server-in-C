@@ -1,0 +1,6 @@
+*** WiFi access point ***
+sudo /usr/sbin/hostapd /etc/hostapd/hostapd.conf
+
+** Kompilacja ***
+gcc -o server LedON.c server.c -lwiringPi
+sudo ./server
