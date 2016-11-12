@@ -9,7 +9,7 @@
 
 int main(){
   init();
-  
+  Led(8);
   
   int welcomeSocket, newSocket, portNum, clientLen, nBytes;
   unsigned char buffer[1024];
@@ -19,51 +19,38 @@ int main(){
   socklen_t addr_size;
   int i;
   int PWM_value;
-
   welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
-
-  portNum = 7891;
-  
+  portNum = 8080;
   serverAddr.sin_family = AF_INET;
   serverAddr.sin_port = htons(portNum);
-  serverAddr.sin_addr.s_addr = inet_addr("127.0.0.1");
+  serverAddr.sin_addr.s_addr = inet_addr("172.24.1.1");
   memset(serverAddr.sin_zero, '\0', sizeof serverAddr.sin_zero);  
-
-bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
-
-  if(listen(welcomeSocket,5)==0)
-    printf("Listening\n");
-  else
-    printf("Error\n");
-
+  bind(welcomeSocket, (struct sockaddr *) &serverAddr, sizeof(serverAddr));
   addr_size = sizeof serverStorage;
-
+  if(listen(welcomeSocket,5)==0)    printf("Listening\n");
+  else    							printf("Error\n");
+  
   /*loop to keep accepting new connections*/
   while(1){
     newSocket = accept(welcomeSocket, (struct sockaddr *) &serverStorage, &addr_size);
-    /*fork a child process to handle the new connection*/
-    
+    Led(8);/*fork a child process to handle the new connection*/
     //if(!fork())
     //{
-       
       nBytes = 1;
       /*loop while connection is live*/
-      while(nBytes!=0){
-         
-        nBytes = recv(newSocket,buffer,1024,0);
-
-	  PWM_value = (int)buffer[0];
-	  PWM_value -= 48;
-	 // Led(8);
-	  //delay(1000);
-	  printf("PWM: %i\n\n", PWM_value);
-	  Led(PWM_value);
-
-        send(newSocket,buffer,nBytes,0);
+      while(nBytes!=0)
+      { 
+      nBytes = recv(newSocket,buffer,1024,0);
+	  Led(1);
+	  //PWM_value = (int)buffer[0];
+	  //PWM_value -= 48;
+	  
+	  //printf("PWM: %i\n\n", PWM_value);
+	  //Led(PWM_value);
+      //send(newSocket,buffer,nBytes,0);
      }
       
       close(newSocket);
-//Led(8);
       exit(0);
     //}
     
