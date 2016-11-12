@@ -17,7 +17,7 @@ void Led(signed char PWM_value)
 {
 	softPwmWrite(1, 0);
 	softPwmWrite(0, PWM_value);
-	delay(1000);
+	delay(100);
 
 	softPwmWrite(0, 0);
 		//digitalWrite(0, HIGH);

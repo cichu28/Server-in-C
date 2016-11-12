@@ -17,7 +17,7 @@ int main(){
   struct sockaddr_in serverAddr;
   struct sockaddr_storage serverStorage;
   socklen_t addr_size;
-  int i;
+  int i = 0;
   int PWM_value;
   welcomeSocket = socket(PF_INET, SOCK_STREAM, 0);
   portNum = 8080;
@@ -39,19 +39,20 @@ int main(){
       nBytes = 1;
       /*loop while connection is live*/
       while(nBytes!=0)
-      { 
+      {
+	  i++;
+	  printf("Connect! #%d		PWM: %d\n", i, buffer[0]); 
       nBytes = recv(newSocket,buffer,1024,0);
 	  Led(1);
 	  //PWM_value = (int)buffer[0];
 	  //PWM_value -= 48;
-	  
 	  //printf("PWM: %i\n\n", PWM_value);
 	  //Led(PWM_value);
       //send(newSocket,buffer,nBytes,0);
      }
       
-      close(newSocket);
-      exit(0);
+      //close(newSocket);
+      //exit(0);
     //}
     
     /*if parent, close the socket and go back to listening new requests*/
