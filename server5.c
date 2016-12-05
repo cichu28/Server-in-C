@@ -42,8 +42,8 @@ int main(){
       {
 		  i++;
 		  nBytes = recv(newSocket,buffer,1024,0);  
-		  PWM_value = (int)buffer[0];
-		  PWM_value2 = (int)buffer[1];
+		  PWM_value = (int)buffer[0]-10;
+		  PWM_value2 = (int)buffer[1]-10;
 		  printf("Connect! #%d		PWM: %d		PWM2: %d\n", i, PWM_value, PWM_value2); 
 		  Led(PWM_value, PWM_value2);
 		  //PWM_value -= 48;
