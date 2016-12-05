@@ -45,7 +45,7 @@ int main(){
 		  PWM_value = (int)buffer[0];
 		  PWM_value2 = (int)buffer[1];
 		  printf("Connect! #%d		PWM: %d		PWM2: %d\n", i, PWM_value, PWM_value2); 
-		  Led(PWM_value);
+		  Led(PWM_value, PWM_value2);
 		  //PWM_value -= 48;
 		  //printf("PWM: %i\n\n", PWM_value);
 		  //Led(PWM_value);
