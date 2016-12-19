@@ -10,8 +10,8 @@ void init(){
 
 
 void Led(signed char PWM_value){
-  softPwmWrite(0, PWM_value);             // ustawiam na pinie numer 0 wartość PWM jako wartość argumentu, który przyjmuje funkcja
-
+  	softPwmWrite(0, PWM_value);             // ustawiam na pinie numer 0 wartość PWM jako wartość argumentu, który przyjmuje funkcja
+}
 
 int main(){
 	init();                                 // wywołanie funkcji inicjalizującej
